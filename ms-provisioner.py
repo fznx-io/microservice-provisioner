@@ -67,3 +67,23 @@ def provision_bitbucket_repo(repo_name):
     strategy_payload = {'mergeConfig': {'defaultStrategy': {'id': 'merge-commit'}}}
     response = requests.post(strategy_url, json=strategy_payload, auth=(bb_auth_user, bb_auth_pass))
     print(f'Merge strategy set: {response.status_code}')
+
+
+def provision_jenkins_jobs(repo_name):
+    """Create Jenkins pipeline jobs"""
+
+    jenkins_job_path = 'job/microservices-pipelines'
+    jenkins_job_url = f'{jenkins_url}/{jenkins_job_path}/createItem?name={repo_name}'
+
+    jenkins_payload = '''<?xml version='1.1' encoding='UTF-8'?>
+<org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject plugin="workflow-multibranch@2.21">
+  <actions/>
+  <properties/>
+  <folderViews class="jenkins.branch.MultiBranchProjectViewHolder" plugin="branch-api@2.5.4">
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+  </folderViews>
+</org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject>'''
+
+    headers = {'Content-Type': 'application/xml'}
+    response = requests.post(jenkins_job_url, data=jenkins_payload, headers=headers, auth=(jenkins_auth_user, jenkins_auth_pass))
+    print(f'Jenkins pipeline created: {response.status_code}')
