@@ -87,3 +87,17 @@ def provision_jenkins_jobs(repo_name):
     headers = {'Content-Type': 'application/xml'}
     response = requests.post(jenkins_job_url, data=jenkins_payload, headers=headers, auth=(jenkins_auth_user, jenkins_auth_pass))
     print(f'Jenkins pipeline created: {response.status_code}')
+
+
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print('Usage: ms-provisioner.py <microservice-name>')
+        sys.exit(1)
+
+    repo_name = sys.argv[1]
+    print(f'Provisioning microservice: {repo_name}')
+
+    provision_bitbucket_repo(repo_name)
+    provision_jenkins_jobs(repo_name)
+
+    print(f'Provisioning complete for {repo_name}')
