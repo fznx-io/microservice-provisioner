@@ -23,6 +23,19 @@ def provision_microservice(repo_name, framework):
     bb_merge_check_url      = bb_url + '/rest/split-diff/1.0/projects/' + bb_project + '/repos/{repo}/settings/general'
     bb_merge_strategy_url   = bb_url + '/rest/default-reviewers/1.0/projects/' + bb_project + '/repos/{repo}/condition'
 
+    # Framework-specific configuration
+    if framework == 'spring':
+        hook_job_path = 'job/hooks/job/spring'
+        jenkins_job_path = 'job/microservices-pipelines-spring'
+        slack_channel = '#spring-deployments'
+    elif framework == 'node':
+        hook_job_path = 'job/hooks/job/node'
+        jenkins_job_path = 'job/microservices-pipelines-node'
+        slack_channel = '#node-deployments'
+    else:
+        print(f'Unknown framework: {framework}')
+        sys.exit(1)
+
     # Create repository
     payload = {'name': repo_name}
     response = requests.post(bb_repo_url, json=payload, auth=(bb_auth_user, bb_auth_pass))
