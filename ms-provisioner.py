@@ -81,6 +81,20 @@ def provision_microservice(repo_name, framework):
     response = requests.post(strategy_url, json=strategy_payload, auth=(bb_auth_user, bb_auth_pass))
     print(f'Merge strategy set: {response.status_code}')
 
+    # Create Jenkins hook job
+    jenkins_hook_url = f'{jenkins_url}/{hook_job_path}/buildWithParameters?ms_name={repo_name}'
+    jenkins_payload = '''<?xml version='1.1' encoding='UTF-8'?>
+<org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject plugin="workflow-multibranch@2.21">
+  <actions/>
+  <properties/>
+  <folderViews class="jenkins.branch.MultiBranchProjectViewHolder" plugin="branch-api@2.5.4">
+    <owner class="org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject" reference="../.."/>
+  </folderViews>
+</org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject>'''
+    headers = {'Content-Type': 'application/xml'}
+    response = requests.post(jenkins_hook_url, data=jenkins_payload, headers=headers, auth=(jenkins_auth_user, jenkins_auth_pass))
+    print(f'Jenkins hook job triggered: {response.status_code}')
+
 
 
 
