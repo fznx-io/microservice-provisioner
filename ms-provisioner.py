@@ -95,6 +95,13 @@ def provision_microservice(repo_name, framework):
     response = requests.post(jenkins_hook_url, data=jenkins_payload, headers=headers, auth=(jenkins_auth_user, jenkins_auth_pass))
     print(f'Jenkins hook job triggered: {response.status_code}')
 
+    # Create branch-specific pipeline jobs
+    branches = ['develop', 'staging', 'master']
+    for branch in branches:
+        job_url = f'{jenkins_url}/{jenkins_job_path}/createItem?name={repo_name}-{branch}'
+        response = requests.post(job_url, data=jenkins_payload, headers=headers, auth=(jenkins_auth_user, jenkins_auth_pass))
+        print(f'Jenkins pipeline for {branch} created: {response.status_code}')
+
 
 
 
