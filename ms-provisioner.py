@@ -16,6 +16,9 @@ def provision_microservice(repo_name, framework):
     jenkins_auth_user   = 'jenkins_auth_user'         # JENKINS_AUTH_USER
     jenkins_auth_pass   = 'jenkins_auth_password'     # JENKINS_AUTH_PASSWORD
 
+    # Slack Configuration
+    slack_token = 'slack_token'                       # SLACK_TOKEN
+
     # Bitbucket API Endpoints
     bb_repo_url             = bb_url + '/rest/api/1.0/projects/' + bb_project + '/repos'
     bb_repo_hook_url        = bb_url + '/rest/api/1.0/projects/' + bb_project + '/repos/{repo}/settings/hooks/com.nerdwin15.stash-stash-webhook-jenkins%3Ajenkins-postreceive-webhook'
@@ -101,6 +104,17 @@ def provision_microservice(repo_name, framework):
         job_url = f'{jenkins_url}/{jenkins_job_path}/createItem?name={repo_name}-{branch}'
         response = requests.post(job_url, data=jenkins_payload, headers=headers, auth=(jenkins_auth_user, jenkins_auth_pass))
         print(f'Jenkins pipeline for {branch} created: {response.status_code}')
+
+    # Send Slack notification
+    slack_url = 'https://slack.com/api/chat.postMessage'
+    slack_payload = {
+        'channel': slack_channel,
+        'text': f'New microservice `{repo_name}` ({framework}) has been provisioned! Jenkins pipelines are ready.',
+        'username': 'MS Provisioner Bot'
+    }
+    slack_headers = {'Authorization': f'Bearer {slack_token}', 'Content-Type': 'application/json'}
+    response = requests.post(slack_url, json=slack_payload, headers=slack_headers)
+    print(f'Slack notification sent: {response.status_code}')
 
 
 
