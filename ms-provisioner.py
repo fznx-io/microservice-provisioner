@@ -116,6 +116,15 @@ def provision_microservice(repo_name, framework):
     response = requests.post(slack_url, json=slack_payload, headers=slack_headers)
     print(f'Slack notification sent: {response.status_code}')
 
+    # Notify DBA team
+    dba_payload = {
+        'channel': '#dba-requests',
+        'text': f'Please create database user for new microservice: `{repo_name}`',
+        'username': 'MS Provisioner Bot'
+    }
+    response = requests.post(slack_url, json=dba_payload, headers=slack_headers)
+    print(f'DBA notification sent: {response.status_code}')
+
 
 
 
