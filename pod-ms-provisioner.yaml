@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ms-provisioner
+  labels:
+    app: ms-provisioner
+spec:
+  containers:
+  - name: provisioner
+    image: python:3.8-slim
+    command: ["python", "/app/ms-provisioner.py"]
+    env:
+    - name: BITBUCKET_AUTH_USER
+      valueFrom:
+        secretKeyRef:
+          name: ms-provisioner-secret
+          key: BITBUCKET_AUTH_USER
+    - name: BITBUCKET_AUTH_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: ms-provisioner-secret
+          key: BITBUCKET_AUTH_PASSWORD
+    - name: JENKINS_AUTH_USER
+      valueFrom:
+        secretKeyRef:
+          name: ms-provisioner-secret
+          key: JENKINS_AUTH_USER
+    - name: JENKINS_AUTH_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: ms-provisioner-secret
+          key: JENKINS_AUTH_PASSWORD
+    - name: SLACK_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: ms-provisioner-secret
+          key: SLACK_TOKEN
+  restartPolicy: Never
