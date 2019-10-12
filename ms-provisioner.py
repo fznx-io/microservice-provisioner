@@ -17,7 +17,7 @@ def provision_microservice(repo_name, framework):
     jenkins_auth_pass   = 'jenkins_auth_password'     # JENKINS_AUTH_PASSWORD
 
     # Slack Configuration
-    slack_token = 'slack_token'                       # SLACK_TOKEN
+    slack_token         = 'slack_token'               # SLACK_TOKEN
 
     # Bitbucket API Endpoints
     bb_repo_url             = bb_url + '/rest/api/1.0/projects/' + bb_project + '/repos'
